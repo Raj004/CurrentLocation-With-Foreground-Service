@@ -39,9 +39,7 @@ public class LocationUpdatesService extends Service {
 
     private static final String TAG = LocationUpdatesService.class.getSimpleName();
 
-    /**
-     * The name of the channel for notifications.
-     */
+
     private static final String CHANNEL_ID = "channel_01";
 
     static final String ACTION_BROADCAST = PACKAGE_NAME + ".broadcast";
@@ -57,35 +55,19 @@ public class LocationUpdatesService extends Service {
      */
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
 
-    /**
-     * The fastest rate for active location updates. Updates will never be more frequent
-     * than this value.
-     */
+
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
-    /**
-     * The identifier for the notification displayed for the foreground service.
-     */
     private static final int NOTIFICATION_ID = 12345678;
 
-    /**
-     * Used to check whether the bound activity has really gone away and not unbound as part of an
-     * orientation change. We create a foreground service notification only if the former takes
-     * place.
-     */
     private boolean mChangingConfiguration = false;
 
     private NotificationManager mNotificationManager;
 
-    /**
-     * Contains parameters used by {@link com.google.android.gms.location.FusedLocationProviderApi}.
-     */
+
     private LocationRequest mLocationRequest;
 
-    /**
-     * Provides access to the Fused Location Provider API.
-     */
     private FusedLocationProviderClient mFusedLocationClient;
 
     /**
@@ -146,7 +128,6 @@ public class LocationUpdatesService extends Service {
             removeLocationUpdates();
             stopSelf();
         }
-        // Tells the system to not try to recreate the service after it has been killed.
         return START_NOT_STICKY;
     }
 
@@ -158,9 +139,7 @@ public class LocationUpdatesService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // Called when a client (MainActivity in case of this sample) comes to the foreground
-        // and binds with this service. The service should cease to be a foreground service
-        // when that happens.
+
         Log.i(TAG, "in onBind()");
         stopForeground(true);
         mChangingConfiguration = false;
@@ -187,15 +166,7 @@ public class LocationUpdatesService extends Service {
         // do nothing. Otherwise, we make this service a foreground service.
         if (!mChangingConfiguration && Utils.requestingLocationUpdates(this)) {
             Log.i(TAG, "Starting foreground service");
-            /*
-            // TODO(developer). If targeting O, use the following code.
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
-                mNotificationManager.startServiceInForeground(new Intent(this,
-                        LocationUpdatesService.class), NOTIFICATION_ID, getNotification());
-            } else {
-                startForeground(NOTIFICATION_ID, getNotification());
-            }
-             */
+
             startForeground(NOTIFICATION_ID, getNotification());
         }
         return true; // Ensures onRebind() is called when a client re-binds.
@@ -206,10 +177,7 @@ public class LocationUpdatesService extends Service {
         mServiceHandler.removeCallbacksAndMessages(null);
     }
 
-    /**
-     * Makes a request for location updates. Note that in this sample we merely log the
-     * {@link SecurityException}.
-     */
+
     public void requestLocationUpdates() {
         Log.i(TAG, "Requesting location updates");
         Utils.setRequestingLocationUpdates(this, true);
@@ -223,10 +191,6 @@ public class LocationUpdatesService extends Service {
         }
     }
 
-    /**
-     * Removes location updates. Note that in this sample we merely log the
-     * {@link SecurityException}.
-     */
     public void removeLocationUpdates() {
         Log.i(TAG, "Removing location updates");
         try {
@@ -238,9 +202,7 @@ public class LocationUpdatesService extends Service {
             Log.e(TAG, "Lost location permission. Could not remove updates. " + unlikely);
         }
     }
-    /**
-     * Returns the {@link NotificationCompat} used as part of the foreground service.
-     */
+
     private Notification getNotification() {
         Intent intent = new Intent(this, LocationUpdatesService.class);
 
@@ -322,21 +284,12 @@ public class LocationUpdatesService extends Service {
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
-    /**
-     * Class used for the client Binder.  Since this service runs in the same process as its
-     * clients, we don't need to deal with IPC.
-     */
     public class LocalBinder extends Binder {
         LocationUpdatesService getService() {
             return LocationUpdatesService.this;
         }
     }
 
-    /**
-     * Returns true if this is a foreground service.
-     *
-     * @param context The {@link Context}.
-     */
     public boolean serviceIsRunningInForeground(Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(
                 Context.ACTIVITY_SERVICE);
