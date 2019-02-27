@@ -1,0 +1,7 @@
+<resources>
+  <string name="app_name">ForGraundService_LocationUpdate</string>
+
+  <string name="launch_activity">LaunchMode App</string>
+  <string name="remove_location_updates">Remove</string>
+  <string name="location_updated">Location Update</string>
+</resources>
